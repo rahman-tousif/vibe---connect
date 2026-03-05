@@ -2,6 +2,18 @@ import { pgTable, text, serial, boolean, timestamp, doublePrecision, integer } f
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
+export const REGIONS = [
+  "North America",
+  "South America",
+  "Europe",
+  "Asia",
+  "Africa",
+  "Oceania",
+  "Middle East",
+] as const;
+
+export type Region = typeof REGIONS[number];
+
 export const profiles = pgTable("profiles", {
   id: serial("id").primaryKey(),
   nickname: text("nickname").notNull(),
@@ -16,6 +28,13 @@ export const groups = pgTable("groups", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
   description: text("description"),
+  region: text("region").notNull().default("North America"),
+  tags: text("tags").default(""),
+  thumbnailUrl: text("thumbnail_url"),
+  hostName: text("host_name"),
+  memberCount: integer("member_count").default(0),
+  maxMembers: integer("max_members").default(20),
+  isLive: boolean("is_live").default(true),
   currentVideoUrl: text("current_video_url"),
   isPlaying: boolean("is_playing").default(false),
   playbackTime: doublePrecision("playback_time").default(0),

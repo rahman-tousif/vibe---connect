@@ -62,6 +62,13 @@ export const api = {
         404: errorSchemas.notFound,
       }
     },
+    seed: {
+      method: 'POST' as const,
+      path: '/api/groups/seed' as const,
+      responses: {
+        201: z.object({ message: z.string(), count: z.number() }),
+      }
+    },
     messages: {
       list: {
         method: 'GET' as const,
