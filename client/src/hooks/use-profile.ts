@@ -1,3 +1,4 @@
+import React from "react";
 import { useMutation } from "@tanstack/react-query";
 import { api, buildUrl } from "@shared/routes";
 import type { InsertProfile, Profile } from "@shared/schema";

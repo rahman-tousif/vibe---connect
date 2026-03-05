@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useLocation } from "wouter";
 import { Camera, MapPin, Sparkles, AlertTriangle } from "lucide-react";
 import { useCreateProfile } from "@/hooks/use-profile";

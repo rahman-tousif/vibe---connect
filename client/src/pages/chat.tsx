@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { Mic, MicOff, Video as VideoIcon, VideoOff, SkipForward, X, Radar, ShieldAlert } from "lucide-react";
 import { useWebRTC } from "@/hooks/use-webrtc";
