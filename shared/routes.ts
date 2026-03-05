@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { insertProfileSchema, profiles } from './schema';
+import { insertProfileSchema, profiles, groups, messages, insertGroupSchema } from './schema';
 
 export const errorSchemas = {
   validation: z.object({
@@ -38,6 +38,40 @@ export const api = {
       }
     }
   },
+  groups: {
+    list: {
+      method: 'GET' as const,
+      path: '/api/groups' as const,
+      responses: {
+        200: z.array(z.custom<typeof groups.$inferSelect>()),
+      }
+    },
+    create: {
+      method: 'POST' as const,
+      path: '/api/groups' as const,
+      input: insertGroupSchema,
+      responses: {
+        201: z.custom<typeof groups.$inferSelect>(),
+      }
+    },
+    get: {
+      method: 'GET' as const,
+      path: '/api/groups/:id' as const,
+      responses: {
+        200: z.custom<typeof groups.$inferSelect>(),
+        404: errorSchemas.notFound,
+      }
+    },
+    messages: {
+      list: {
+        method: 'GET' as const,
+        path: '/api/groups/:id/messages' as const,
+        responses: {
+          200: z.array(z.custom<typeof messages.$inferSelect>()),
+        }
+      }
+    }
+  }
 };
 
 export function buildUrl(path: string, params?: Record<string, string | number>): string {
@@ -60,6 +94,13 @@ export const wsEvents = {
     answer: z.object({ targetId: z.string(), sdp: z.any() }),
     iceCandidate: z.object({ targetId: z.string(), candidate: z.any() }),
     endChat: z.object({ targetId: z.string().optional() }),
+    // Group watch party events
+    joinGroup: z.object({ groupId: z.number(), profileId: z.number() }),
+    sendMessage: z.object({ groupId: z.number(), profileId: z.number(), content: z.string() }),
+    updateVideo: z.object({ groupId: z.number(), videoUrl: z.string(), isPlaying: z.boolean(), playbackTime: z.number() }),
+    groupOffer: z.object({ groupId: z.number(), targetProfileId: z.number(), sdp: z.any() }),
+    groupAnswer: z.object({ groupId: z.number(), targetProfileId: z.number(), sdp: z.any() }),
+    groupIceCandidate: z.object({ groupId: z.number(), targetProfileId: z.number(), candidate: z.any() }),
   },
   receive: {
     matched: z.object({ partnerId: z.string(), partnerProfile: z.any(), initiator: z.boolean() }),
@@ -67,6 +108,13 @@ export const wsEvents = {
     answer: z.object({ senderId: z.string(), sdp: z.any() }),
     iceCandidate: z.object({ senderId: z.string(), candidate: z.any() }),
     chatEnded: z.object({}),
-    error: z.object({ message: z.string() })
+    error: z.object({ message: z.string() }),
+    // Group watch party events
+    userJoinedGroup: z.object({ profileId: z.number(), profile: z.any() }),
+    newMessage: z.object({ message: z.any() }),
+    videoUpdated: z.object({ videoUrl: z.string(), isPlaying: z.boolean(), playbackTime: z.number() }),
+    groupOffer: z.object({ senderProfileId: z.number(), sdp: z.any() }),
+    groupAnswer: z.object({ senderProfileId: z.number(), sdp: z.any() }),
+    groupIceCandidate: z.object({ senderProfileId: z.number(), candidate: z.any() }),
   }
 };
